@@ -2,6 +2,8 @@ package com.mromer.bikeclimber;
 
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
@@ -45,6 +47,15 @@ public class MapActivity extends FragmentActivity {
 			public void taskSuccess(List<ElevationSearchResponse> result) {
 
 				listElevationSearchResponse = result;
+				
+				if (listElevationSearchResponse == null ||
+						listElevationSearchResponse.size() == 0) {
+					
+					lanzarAlerta("No existen rutas con los criterios seleccionados"); 
+					
+					return;
+					
+				}
 
 				// Para cada ruta...
 				for (ElevationSearchResponse  elevationSearchResponse : listElevationSearchResponse) {
@@ -75,6 +86,7 @@ public class MapActivity extends FragmentActivity {
 				}
 
 			}
+			
 
 			@Override
 			public void taskFailure(String error) {
@@ -112,6 +124,23 @@ public class MapActivity extends FragmentActivity {
 	private int getGrosor(double pendiente) {
 
 		return GROSOR_LINEA_RUTA_SELECCIONADA;
+	}
+	
+	private void lanzarAlerta(String mensaje) {	
+	
+		AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);  
+        dialogo1.setTitle("Aviso");  
+        dialogo1.setMessage(mensaje);            
+        dialogo1.setCancelable(false);  
+        dialogo1.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {  
+            public void onClick(DialogInterface dialogo1, int id) {  
+               
+            }  
+        });  
+                  
+        dialogo1.show(); 
+        
+        
 	}
 
 }
