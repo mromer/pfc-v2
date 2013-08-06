@@ -19,6 +19,7 @@ public class MapActivity extends FragmentActivity {
 
 	private static final int GROSOR_LINEA_RUTA_SELECCIONADA = 5;
 	private static final int GROSOR_LINEA_RUTA_NO_SELECCIONADA = 5;
+	private static final float ZOOM = 13f;
 
 	private GoogleMap mapa;
 
@@ -32,11 +33,13 @@ public class MapActivity extends FragmentActivity {
 		mapa = ((SupportMapFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.map)).getMap();
 
-		LatLng latLng = new LatLng(36.724335, -4.422737);
+		LatLng inicio = new LatLng(36.714686, -4.444313);
+		LatLng fin  = new LatLng(36.719829, -4.420002);	
+		
 
-		mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f));
+		mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(inicio, ZOOM));
 
-		new GetRoutesTask(new GetRoutesTaskResultI() {
+		new GetRoutesTask(this, new GetRoutesTaskResultI() {
 
 			@Override
 			public void taskSuccess(List<ElevationSearchResponse> result) {
@@ -78,7 +81,7 @@ public class MapActivity extends FragmentActivity {
 				// TODO Auto-generated method stub
 
 			}
-		}).execute();
+		}, inicio, fin).execute();
 	}
 
 

@@ -3,6 +3,11 @@ package com.mromer.bikeclimber.task;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.os.AsyncTask;
+
+import com.google.android.gms.maps.model.LatLng;
 import com.mromer.bikeclimber.bean.DireccionRequestGmaps;
 import com.mromer.bikeclimber.bean.ElevationPoint;
 import com.mromer.bikeclimber.bean.ElevationSearchResponse;
@@ -13,15 +18,17 @@ import com.mromer.bikeclimber.utils.ElevationRequestGmaps;
 import com.mromer.bikeclimber.utils.PolylineUtil;
 
 
-import android.os.AsyncTask;
-
-
 public class GetRoutesTask {
 	
 	private GetRoutesTaskResultI callBack;
-
-	public GetRoutesTask (GetRoutesTaskResultI callBack) {
+	private LatLng inicio, fin;
+	private Context contexto;
+	
+	public GetRoutesTask (Context contexto, GetRoutesTaskResultI callBack, LatLng inicio, LatLng fin) {
 		this.callBack = callBack;
+		this.inicio = inicio;
+		this.fin = fin;
+		this.contexto = contexto;
 	}
 
 	public void execute() {
@@ -29,9 +36,13 @@ public class GetRoutesTask {
 	}
 
 	private class DoTask extends AsyncTask<String, Float, List<ElevationSearchResponse>>{
-
+		ProgressDialog progress;
+		
 		protected void onPreExecute() {
-
+			progress = new ProgressDialog(contexto);
+			progress.setMessage("Cargando");
+			progress.setCancelable(false);
+			progress.show();
 		}
 
 		protected List<ElevationSearchResponse> doInBackground(String... urls) {
@@ -45,7 +56,11 @@ public class GetRoutesTask {
 			try {
 
 				// Prueba para Málaga
-				String json = peticionesGmapsDirection.obtenerRutas("36.714686", "-4.444313", "36.719829", "-4.420002");
+//				String json = peticionesGmapsDirection.obtenerRutas("36.714686", "-4.444313", "36.719829", "-4.420002");
+				String json = peticionesGmapsDirection.obtenerRutas(Double.toString(inicio.latitude)
+						, Double.toString(inicio.longitude)
+						, Double.toString(fin.latitude)
+						, Double.toString(fin.longitude));
 
 
 				RoutesSearchResponse routesSearchResponse = peticionesGmapsDirection.obtenerGson(json);
@@ -136,6 +151,8 @@ public class GetRoutesTask {
 
 
 		protected void onPostExecute(List<ElevationSearchResponse> result) {
+			progress.dismiss();
+			
 			callBack.taskSuccess(result);
 		}
 	}
