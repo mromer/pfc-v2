@@ -5,7 +5,11 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -17,7 +21,7 @@ import com.mromer.bikeclimber.bean.ElevationSearchResponse;
 import com.mromer.bikeclimber.task.GetRoutesTask;
 import com.mromer.bikeclimber.task.GetRoutesTaskResultI;
 
-public class MapActivity extends FragmentActivity {	
+public class MapActivity extends ActionBarActivity {	
 
 	private static final int GROSOR_LINEA_RUTA_SELECCIONADA = 5;
 	private static final int GROSOR_LINEA_RUTA_NO_SELECCIONADA = 5;
@@ -31,6 +35,9 @@ public class MapActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
+		
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
 
 		mapa = ((SupportMapFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.map)).getMap();
@@ -83,10 +90,10 @@ public class MapActivity extends FragmentActivity {
 						elevationPointPrev = elevationPoint;
 
 					}
-				}
+				}				
+				
+			}		
 
-			}
-			
 
 			@Override
 			public void taskFailure(String error) {
@@ -95,7 +102,29 @@ public class MapActivity extends FragmentActivity {
 			}
 		}, inicio, fin).execute();
 	}
+	
 
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    // Inflate the menu items for use in the action bar
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.map, menu);
+	    return true;
+	}
+	
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle presses on the action bar items
+	    switch (item.getItemId()) {
+	        case R.id.menu_list:	            
+	            return true;
+	       
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
 
 
 	private int getColorLinea(double pendiente, double pendienteMaxima) {

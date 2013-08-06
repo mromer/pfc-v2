@@ -26,8 +26,12 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         
+<!--         <meta-data android:name="com.google.android.maps.v2.API_KEY" -->
+<!--                android:value="AIzaSyAm7OKdTY0n6qZo0n2ZR2Bw3yg6f3UZGqc"/> -->
+        
         <meta-data android:name="com.google.android.maps.v2.API_KEY"
-               android:value="AIzaSyAm7OKdTY0n6qZo0n2ZR2Bw3yg6f3UZGqc"/>
+               android:value="AIzaSyAKNGEy1KPNTuK_JUHR3LaTAwUW_mopspE"/>        
+        
         
         <activity
             android:name="com.mromer.bikeclimber.MapActivity"
