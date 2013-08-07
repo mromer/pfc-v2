@@ -3,33 +3,47 @@ package com.mromer.bikeclimber;
 import java.util.List;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.mromer.bikeclimber.adapter.ListRutasDialogAdapter;
 import com.mromer.bikeclimber.bean.ElevationPoint;
 import com.mromer.bikeclimber.bean.ElevationSearchResponse;
 import com.mromer.bikeclimber.task.GetRoutesTask;
 import com.mromer.bikeclimber.task.GetRoutesTaskResultI;
+import com.mromer.bikeclimber.utils.BitMapUtils;
 
 public class MapActivity extends ActionBarActivity {	
 
-	private static final int GROSOR_LINEA_RUTA_SELECCIONADA = 5;
+	private static final int GROSOR_LINEA_RUTA_SELECCIONADA = 15;
 	private static final int GROSOR_LINEA_RUTA_NO_SELECCIONADA = 5;
-	private static final float ZOOM = 13f;
+	private static final float ZOOM = 14f;
 
 	private GoogleMap mapa;
 
+	private double penditeneMaximaTotal = 0;
+
+	private int bestRouteIndex;
+	private int rutaSeleccionadaIndex;
+
 	private List<ElevationSearchResponse> listElevationSearchResponse;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +58,7 @@ public class MapActivity extends ActionBarActivity {
 
 		LatLng inicio = new LatLng(36.714686, -4.444313);
 		LatLng fin  = new LatLng(36.719829, -4.420002);	
-		
+
 
 		mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(inicio, ZOOM));
 
@@ -54,44 +68,42 @@ public class MapActivity extends ActionBarActivity {
 			public void taskSuccess(List<ElevationSearchResponse> result) {
 
 				listElevationSearchResponse = result;
-				
+
 				if (listElevationSearchResponse == null ||
 						listElevationSearchResponse.size() == 0) {
-					
+
 					lanzarAlerta("No existen rutas con los criterios seleccionados"); 
-					
+
 					return;
-					
+
 				}
 
+				bestRouteIndex = getBestRoute();
+				int indexRoute = 0;
+
 				// Para cada ruta...
-				for (ElevationSearchResponse  elevationSearchResponse : listElevationSearchResponse) {
+				for (ElevationSearchResponse  elevationSearchResponse : listElevationSearchResponse) {					
 
-					double pendienteMaxima = elevationSearchResponse.pendienteMaxima;
+					if (indexRoute != bestRouteIndex) {
+						pintarRuta(elevationSearchResponse, false);
+					}	
 
-					List<ElevationPoint> listadoPuntos = elevationSearchResponse.listadoPuntos;				
-
-					ElevationPoint elevationPointPrev = null;
-					for (ElevationPoint elevationPoint : listadoPuntos) {									
-
-						if (elevationPointPrev != null) {
-							LatLng puntoInicio = new LatLng(elevationPointPrev.location.latitud, elevationPointPrev.location.longitud);
-							LatLng puntoFin = new LatLng(elevationPoint.location.latitud, elevationPoint.location.longitud);
-							int color = getColorLinea(elevationPoint.pendiente, pendienteMaxima);
-							int grosor = getGrosor(1);
-
-							PolylineOptions polylineOptions = new PolylineOptions().add(puntoInicio, puntoFin);						
-							polylineOptions.width(grosor);
-							polylineOptions.color(color);
-
-							mapa.addPolyline(polylineOptions);
-						}
-
-						elevationPointPrev = elevationPoint;
-
+					// Aprobechamos para obtener la pendiente máxima de todas
+					if (elevationSearchResponse.pendienteMaxima > penditeneMaximaTotal) {
+						penditeneMaximaTotal = elevationSearchResponse.pendienteMaxima;
 					}
-				}				
-				
+
+					indexRoute++;
+				}			
+
+				// Pintamos la ruta seleccionada que coincide con la mejor				
+				pintarRuta(listElevationSearchResponse.get(bestRouteIndex), true);
+				pintarRutaNegra(listElevationSearchResponse.get(bestRouteIndex));
+
+				rutaSeleccionadaIndex = bestRouteIndex;
+
+				pintarEscala(listElevationSearchResponse.get(bestRouteIndex));
+
 			}		
 
 
@@ -102,35 +114,106 @@ public class MapActivity extends ActionBarActivity {
 			}
 		}, inicio, fin).execute();
 	}
-	
 
-	
+
+	private void pintarRuta(ElevationSearchResponse ruta, boolean seleccionada) { 		
+
+
+		double pendienteMaxima = ruta.pendienteMaxima;
+
+		List<ElevationPoint> listadoPuntos = ruta.listadoPuntos;				
+
+		ElevationPoint elevationPointPrev = null;					
+
+		int grosor = getGrosor(seleccionada);
+
+		// Tenemos que pintar el último overlay la ruta seleccionada		
+		for (ElevationPoint elevationPoint : listadoPuntos) {
+
+			if (elevationPointPrev != null) {
+				LatLng puntoInicio = new LatLng(elevationPointPrev.location.latitud, elevationPointPrev.location.longitud);
+				LatLng puntoFin = new LatLng(elevationPoint.location.latitud, elevationPoint.location.longitud);
+				int color = getColorLinea(elevationPoint.pendiente, pendienteMaxima, seleccionada);
+
+				PolylineOptions polylineOptions = new PolylineOptions().add(puntoInicio, puntoFin);						
+				polylineOptions.width(grosor);
+				polylineOptions.color(color);				
+
+				mapa.addPolyline(polylineOptions);				
+
+			}
+
+			elevationPointPrev = elevationPoint;			
+		}
+	}
+
+	private void pintarRutaNegra(ElevationSearchResponse ruta) {
+
+		List<ElevationPoint> listadoPuntos = ruta.listadoPuntos;				
+
+		ElevationPoint elevationPointPrev = null;					
+
+		int grosor = 2;
+
+		// Tenemos que pintar el último overlay la ruta seleccionada
+		for (ElevationPoint elevationPoint : listadoPuntos) {
+
+			if (elevationPointPrev != null) {
+				LatLng puntoInicio = new LatLng(elevationPointPrev.location.latitud, elevationPointPrev.location.longitud);
+				LatLng puntoFin = new LatLng(elevationPoint.location.latitud, elevationPoint.location.longitud);
+				int color = 0xff000000;
+
+				PolylineOptions polylineOptions = new PolylineOptions().add(puntoInicio, puntoFin);						
+				polylineOptions.width(grosor);
+				polylineOptions.color(color);
+				
+				// Indicamos que se pinte lo último
+				polylineOptions.zIndex(10);
+				
+				mapa.addPolyline(polylineOptions);
+			
+
+			} else {
+				elevationPointPrev = null;
+			}
+
+			elevationPointPrev = elevationPoint;
+		}
+	}
+
+
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-	    // Inflate the menu items for use in the action bar
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.map, menu);
-	    return true;
+		// Inflate the menu items for use in the action bar
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.map, menu);
+		return true;
 	}
-	
-	
+
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle presses on the action bar items
-	    switch (item.getItemId()) {
-	        case R.id.menu_list:	            
-	            return true;
-	       
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
+		// Handle presses on the action bar items
+		switch (item.getItemId()) {
+		case R.id.menu_list:
+
+			Dialog dialogoRutas = crearDialogoListadoRutas();
+			dialogoRutas.show();
+
+
+			return true;
+
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 
-	private int getColorLinea(double pendiente, double pendienteMaxima) {
+	private int getColorLinea(double pendiente, double pendienteMaxima, boolean seleccionado) {
 
 		int R = 0;
-		int G = 255;
+		int G = 255;		
 
 		pendiente = Math.abs(pendiente);
 		if (pendiente <= (pendienteMaxima/2)) {
@@ -141,35 +224,139 @@ public class MapActivity extends ActionBarActivity {
 			G = (int) Math.round(((pendiente-(pendienteMaxima/2)) * (-255) / (pendienteMaxima/2)) + 255);
 		}
 
-		return rgb(R, G, 0);
+		if (seleccionado) {
+			return rgbSeleccionado(R, G, 0);
+		} else {
+			return rgbNoSeleccionado(R, G, 0);
+		}
+
 
 	}
 
-	public static int rgb(int red, int green, int blue) {
+	public static int rgbSeleccionado(int red, int green, int blue) {
 		return (0xFF << 24) | (red << 16) | (green << 8) | blue;
 	}
 
-
-	private int getGrosor(double pendiente) {
-
-		return GROSOR_LINEA_RUTA_SELECCIONADA;
+	public static int rgbNoSeleccionado(int red, int green, int blue) {
+		return (0xAA << 24) | (red << 16) | (green << 8) | blue;
 	}
-	
+
+
+	private int getGrosor(boolean seleccionada) {
+
+		if (seleccionada) {
+			return GROSOR_LINEA_RUTA_SELECCIONADA;
+		} else {
+			return GROSOR_LINEA_RUTA_NO_SELECCIONADA;
+		}
+
+	}
+
+	private int getBestRoute() {	
+
+		int best = 0;
+		double bestDificultad = 0;
+		int i = 0;
+		for (ElevationSearchResponse elevationSearchResponse : listElevationSearchResponse) {	
+
+			if (i == 0) {
+				bestDificultad = elevationSearchResponse.dificuldad;
+			} else if (elevationSearchResponse.dificuldad < bestDificultad){
+				best = i;
+				bestDificultad = elevationSearchResponse.dificuldad;
+			}
+			i++;
+		}
+		return best;
+	}
+
 	private void lanzarAlerta(String mensaje) {	
-	
+
 		AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);  
-        dialogo1.setTitle("Aviso");  
-        dialogo1.setMessage(mensaje);            
-        dialogo1.setCancelable(false);  
-        dialogo1.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {  
-            public void onClick(DialogInterface dialogo1, int id) {  
-               
-            }  
-        });  
-                  
-        dialogo1.show(); 
-        
-        
+		dialogo1.setTitle("Aviso");  
+		dialogo1.setMessage(mensaje);            
+		dialogo1.setCancelable(false);  
+		dialogo1.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {  
+			public void onClick(DialogInterface dialogo1, int id) {  
+
+			}  
+		});  
+
+		dialogo1.show(); 
 	}
+
+	private void pintarEscala (ElevationSearchResponse route) {		
+
+		Resources res = getResources();
+
+		Bitmap bitmapEscala = BitmapFactory.decodeResource(res, R.drawable.escala).copy(Bitmap.Config.ARGB_8888, true);		
+
+		Bitmap bitmapCuadradoMedia = BitmapFactory.decodeResource(res, R.drawable.marcadormedia).copy(Bitmap.Config.ARGB_8888, true);
+
+		Bitmap bitmapCuadradoMaxima = BitmapFactory.decodeResource(res, R.drawable.marcadormax).copy(Bitmap.Config.ARGB_8888, true);
+
+		new BitMapUtils().getOverlayGradiente(bitmapEscala, bitmapCuadradoMedia, bitmapCuadradoMaxima,
+				route.pendienteMedia, route.pendienteMaxima, penditeneMaximaTotal);
+
+		ImageView escala = (ImageView) findViewById(R.id.escala);
+		escala.setImageBitmap(bitmapEscala);	
+
+		TextView textoDerecha =  (TextView) findViewById(R.id.textoDer);
+		textoDerecha.setText((int) route.pendienteMaxima + "%");
+
+		TextView textoIzq =  (TextView) findViewById(R.id.textoIzq);
+		textoIzq.setText("0%");
+	}
+
+	/**
+	 * Método que abre el dialog de selección de ruta.
+	 */
+	public  Dialog crearDialogoListadoRutas( ) {
+
+		ListRutasDialogAdapter listAlertDialogAdapter = new ListRutasDialogAdapter(this
+				, listElevationSearchResponse, rutaSeleccionadaIndex);		
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+		DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
+
+
+			public void onClick(DialogInterface dialog, int item) {
+
+				if (item != rutaSeleccionadaIndex) {
+					
+					mapa.clear();
+
+					rutaSeleccionadaIndex = item;
+
+					int i = 0;
+
+					for (ElevationSearchResponse route: listElevationSearchResponse){
+
+						if (item != i) {
+							pintarRuta(route, false);
+						}
+						i++;
+					}
+					
+					pintarRuta(listElevationSearchResponse.get(item), true);				
+					pintarRutaNegra(listElevationSearchResponse.get(item));
+					
+					pintarEscala(listElevationSearchResponse.get(item));
+
+				}
+
+				dialog.dismiss();
+			}
+			
+		};
+
+
+		builder.setAdapter(listAlertDialogAdapter, onClickListener);
+
+		AlertDialog alert = builder.create();	
+
+		return alert;
+	}	
 
 }

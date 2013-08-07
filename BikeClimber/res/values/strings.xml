@@ -11,5 +11,10 @@
         <item>Venus</item>
         <item>Earth</item>
     </string-array>
+    
+    <string name="MAPA_DIALOG_RUTA">ROUTE</string>
+	<string name="MAPA_DIALOG_DISTANCIA">DISTANCE</string>
+	<string name="MAPA_DIALOG_MEDIA">AVG</string>
+	<string name="MAPA_DIALOG_MAX">MAX</string>	
 
 </resources>

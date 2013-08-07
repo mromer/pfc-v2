@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp"
+        android:paddingLeft="3dp"
+        android:paddingTop="5dp" >
+
+        <ImageView
+            android:id="@+id/icono_mejor_ruta"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/estrella5"
+            android:visibility="invisible" >
+        </ImageView>
+
+        <TextView
+            android:id="@+id/detalle_rutas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/icono_mejor_ruta"
+            android:paddingLeft="3dp"
+            android:paddingTop="3dp"
+            android:textColor="#4a4a4a"
+            android:textSize="@dimen/text_size_medium"
+            android:textStyle="bold" >
+        </TextView>
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:background="@drawable/linea" >
+    </ImageView>
+
+</LinearLayout>
