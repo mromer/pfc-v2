@@ -12,7 +12,7 @@
     <!-- ActionBar styles -->
     <style name="MyActionBar"
            parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">#cc1818</item>
+        <item name="android:background">#cc4747</item>
     </style>
 
 </resources>

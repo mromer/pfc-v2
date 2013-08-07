@@ -21,6 +21,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.mromer.bikeclimber.adapter.ListRutasDialogAdapter;
 import com.mromer.bikeclimber.bean.ElevationPoint;
@@ -30,6 +31,8 @@ import com.mromer.bikeclimber.task.GetRoutesTaskResultI;
 import com.mromer.bikeclimber.utils.BitMapUtils;
 
 public class MapActivity extends ActionBarActivity {	
+	
+	private static final int GROSOR_LINEA_NEGRA = 17;
 
 	private static final int GROSOR_LINEA_RUTA_SELECCIONADA = 15;
 	private static final int GROSOR_LINEA_RUTA_NO_SELECCIONADA = 5;
@@ -41,8 +44,14 @@ public class MapActivity extends ActionBarActivity {
 
 	private int bestRouteIndex;
 	private int rutaSeleccionadaIndex;
+	
+	private Dialog dialogoRutas;
 
 	private List<ElevationSearchResponse> listElevationSearchResponse;
+	
+	private LatLng origenLatLng = new LatLng(36.714686, -4.444313);
+	private LatLng destinoLatLng  = new LatLng(36.719829, -4.420002);	
+	
 	
 
 	@Override
@@ -50,17 +59,33 @@ public class MapActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
 		
-		ActionBar actionBar = getSupportActionBar();
+		ActionBar actionBar = getSupportActionBar();		
+		
+		int walking = 1;
+		if (walking == 1) {
+			actionBar.setIcon(R.drawable.estrella5);
+		} else {
+			actionBar.setIcon(R.drawable.estrella5)	;		
+		}
+		
 		actionBar.setDisplayHomeAsUpEnabled(true);
-
+		
 		mapa = ((SupportMapFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.map)).getMap();
 
-		LatLng inicio = new LatLng(36.714686, -4.444313);
-		LatLng fin  = new LatLng(36.719829, -4.420002);	
+		origenLatLng = new LatLng(36.714686, -4.444313);
+		destinoLatLng  = new LatLng(36.719829, -4.420002);	
+		
+		mapa.addMarker(new MarkerOptions()
+        .position(origenLatLng)
+        .title("Calle inicio"));
+		
+		mapa.addMarker(new MarkerOptions()
+        .position(destinoLatLng)
+        .title("Calle fin"));
 
 
-		mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(inicio, ZOOM));
+		mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(origenLatLng, ZOOM));
 
 		new GetRoutesTask(this, new GetRoutesTaskResultI() {
 
@@ -103,6 +128,9 @@ public class MapActivity extends ActionBarActivity {
 				rutaSeleccionadaIndex = bestRouteIndex;
 
 				pintarEscala(listElevationSearchResponse.get(bestRouteIndex));
+				
+				dialogoRutas = crearDialogoListadoRutas();
+				dialogoRutas.show();
 
 			}		
 
@@ -112,7 +140,7 @@ public class MapActivity extends ActionBarActivity {
 				// TODO Auto-generated method stub
 
 			}
-		}, inicio, fin).execute();
+		}, origenLatLng, destinoLatLng).execute();
 	}
 
 
@@ -137,7 +165,14 @@ public class MapActivity extends ActionBarActivity {
 
 				PolylineOptions polylineOptions = new PolylineOptions().add(puntoInicio, puntoFin);						
 				polylineOptions.width(grosor);
-				polylineOptions.color(color);				
+				polylineOptions.color(color);		
+				
+				if (seleccionada) {
+					// Indicamos que se pinte lo último
+					polylineOptions.zIndex(10);
+				} else {					
+					polylineOptions.zIndex(3);
+				}				
 
 				mapa.addPolyline(polylineOptions);				
 
@@ -151,9 +186,7 @@ public class MapActivity extends ActionBarActivity {
 
 		List<ElevationPoint> listadoPuntos = ruta.listadoPuntos;				
 
-		ElevationPoint elevationPointPrev = null;					
-
-		int grosor = 2;
+		ElevationPoint elevationPointPrev = null;		
 
 		// Tenemos que pintar el último overlay la ruta seleccionada
 		for (ElevationPoint elevationPoint : listadoPuntos) {
@@ -164,12 +197,12 @@ public class MapActivity extends ActionBarActivity {
 				int color = 0xff000000;
 
 				PolylineOptions polylineOptions = new PolylineOptions().add(puntoInicio, puntoFin);						
-				polylineOptions.width(grosor);
+				polylineOptions.width(GROSOR_LINEA_NEGRA);
 				polylineOptions.color(color);
 				
 				// Indicamos que se pinte lo último
-				polylineOptions.zIndex(10);
-				
+				polylineOptions.zIndex(5);
+												
 				mapa.addPolyline(polylineOptions);
 			
 
@@ -197,10 +230,10 @@ public class MapActivity extends ActionBarActivity {
 		// Handle presses on the action bar items
 		switch (item.getItemId()) {
 		case R.id.menu_list:
-
-			Dialog dialogoRutas = crearDialogoListadoRutas();
-			dialogoRutas.show();
-
+			if (!dialogoRutas.isShowing()) {
+				dialogoRutas = crearDialogoListadoRutas();
+				dialogoRutas.show();
+			}
 
 			return true;
 
@@ -326,6 +359,14 @@ public class MapActivity extends ActionBarActivity {
 				if (item != rutaSeleccionadaIndex) {
 					
 					mapa.clear();
+					
+					mapa.addMarker(new MarkerOptions()
+			        .position(origenLatLng)
+			        .title("Calle inicio"));
+					
+					mapa.addMarker(new MarkerOptions()
+			        .position(destinoLatLng)
+			        .title("Calle fin"));
 
 					rutaSeleccionadaIndex = item;
 
