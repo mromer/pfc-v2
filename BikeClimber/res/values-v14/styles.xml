@@ -13,7 +13,7 @@
     <!-- ActionBar styles -->
     <style name="MyActionBar"
            parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">#cc4747</item>
+        <item name="android:background">@color/CityMove_rojo</item>
     </style>
 
 </resources>

@@ -31,7 +31,7 @@ import com.mromer.bikeclimber.task.GetRoutesTaskResultI;
 import com.mromer.bikeclimber.utils.BitMapUtils;
 
 public class MapActivity extends ActionBarActivity {	
-	
+
 	private static final int GROSOR_LINEA_NEGRA = 17;
 
 	private static final int GROSOR_LINEA_RUTA_SELECCIONADA = 15;
@@ -44,45 +44,45 @@ public class MapActivity extends ActionBarActivity {
 
 	private int bestRouteIndex;
 	private int rutaSeleccionadaIndex;
-	
+
 	private Dialog dialogoRutas;
 
 	private List<ElevationSearchResponse> listElevationSearchResponse;
-	
+
 	private LatLng origenLatLng = new LatLng(36.714686, -4.444313);
 	private LatLng destinoLatLng  = new LatLng(36.719829, -4.420002);	
-	
-	
+
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
-		
+
 		ActionBar actionBar = getSupportActionBar();		
-		
+
 		int walking = 1;
 		if (walking == 1) {
-			actionBar.setIcon(R.drawable.estrella5);
+			actionBar.setIcon(R.drawable.walkingactionbar);
 		} else {
-			actionBar.setIcon(R.drawable.estrella5)	;		
+			actionBar.setIcon(R.drawable.walkingactionbar)	;		
 		}
-		
+
 		actionBar.setDisplayHomeAsUpEnabled(true);
-		
+
 		mapa = ((SupportMapFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.map)).getMap();
 
 		origenLatLng = new LatLng(36.714686, -4.444313);
 		destinoLatLng  = new LatLng(36.719829, -4.420002);	
-		
+
 		mapa.addMarker(new MarkerOptions()
-        .position(origenLatLng)
-        .title("Calle inicio"));
-		
+		.position(origenLatLng)
+		.title("Calle inicio"));
+
 		mapa.addMarker(new MarkerOptions()
-        .position(destinoLatLng)
-        .title("Calle fin"));
+		.position(destinoLatLng)
+		.title("Calle fin"));
 
 
 		mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(origenLatLng, ZOOM));
@@ -128,7 +128,7 @@ public class MapActivity extends ActionBarActivity {
 				rutaSeleccionadaIndex = bestRouteIndex;
 
 				pintarEscala(listElevationSearchResponse.get(bestRouteIndex));
-				
+
 				dialogoRutas = crearDialogoListadoRutas();
 				dialogoRutas.show();
 
@@ -166,7 +166,7 @@ public class MapActivity extends ActionBarActivity {
 				PolylineOptions polylineOptions = new PolylineOptions().add(puntoInicio, puntoFin);						
 				polylineOptions.width(grosor);
 				polylineOptions.color(color);		
-				
+
 				if (seleccionada) {
 					// Indicamos que se pinte lo último
 					polylineOptions.zIndex(10);
@@ -199,12 +199,12 @@ public class MapActivity extends ActionBarActivity {
 				PolylineOptions polylineOptions = new PolylineOptions().add(puntoInicio, puntoFin);						
 				polylineOptions.width(GROSOR_LINEA_NEGRA);
 				polylineOptions.color(color);
-				
+
 				// Indicamos que se pinte lo último
 				polylineOptions.zIndex(5);
-												
+
 				mapa.addPolyline(polylineOptions);
-			
+
 
 			} else {
 				elevationPointPrev = null;
@@ -229,6 +229,11 @@ public class MapActivity extends ActionBarActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle presses on the action bar items
 		switch (item.getItemId()) {
+		case android.R.id.home:
+			super.onBackPressed();
+			
+			return true;
+
 		case R.id.menu_list:
 			if (!dialogoRutas.isShowing()) {
 				dialogoRutas = crearDialogoListadoRutas();
@@ -357,16 +362,16 @@ public class MapActivity extends ActionBarActivity {
 			public void onClick(DialogInterface dialog, int item) {
 
 				if (item != rutaSeleccionadaIndex) {
-					
+
 					mapa.clear();
-					
+
 					mapa.addMarker(new MarkerOptions()
-			        .position(origenLatLng)
-			        .title("Calle inicio"));
-					
+					.position(origenLatLng)
+					.title("Calle inicio"));
+
 					mapa.addMarker(new MarkerOptions()
-			        .position(destinoLatLng)
-			        .title("Calle fin"));
+					.position(destinoLatLng)
+					.title("Calle fin"));
 
 					rutaSeleccionadaIndex = item;
 
@@ -379,17 +384,17 @@ public class MapActivity extends ActionBarActivity {
 						}
 						i++;
 					}
-					
+
 					pintarRuta(listElevationSearchResponse.get(item), true);				
 					pintarRutaNegra(listElevationSearchResponse.get(item));
-					
+
 					pintarEscala(listElevationSearchResponse.get(item));
 
 				}
 
 				dialog.dismiss();
 			}
-			
+
 		};
 
 

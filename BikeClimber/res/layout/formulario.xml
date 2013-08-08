@@ -5,10 +5,44 @@
     android:orientation="vertical" >
 
     <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="50dp" >
+
+        <ImageView
+            android:id="@+id/walkingImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="actionButton"
+            android:src="@drawable/selector_walking_on" />
+
+        <ImageView
+            android:id="@+id/bikingImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:clickable="true"
+            android:onClick="actionButton"
+            android:src="@drawable/selector_walking_off" />
+
+        <ImageView
+            android:id="@+id/wheelingImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="actionButton"
+            android:src="@drawable/selector_walking_off" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:padding="10dp" >
 
         <EditText
@@ -31,16 +65,21 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/continuarBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="40dp"
-        android:background="#cc4747"
+        android:background="@color/CityMove_rojo"
+        android:clickable="true"
         android:gravity="center"
-        android:hint="Seleccione destino"
-        android:padding="10dp"
+        android:onClick="actionButton"
+        android:paddingBottom="13dp"
+        android:paddingLeft="35dp"
+        android:paddingRight="35dp"
+        android:paddingTop="13dp"
         android:text="Aceptar"
-        android:textColor="#f4f4f4"
+        android:textColor="@color/CityMove_textGrey"
         android:textSize="@dimen/text_size_medium" />
 
 </LinearLayout>
