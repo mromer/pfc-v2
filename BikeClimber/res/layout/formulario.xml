@@ -16,6 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
+            
             android:onClick="actionButton"
             android:src="@drawable/selector_walking_on" />
 
@@ -26,16 +27,18 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:clickable="true"
+           
             android:onClick="actionButton"
-            android:src="@drawable/selector_walking_off" />
+            android:src="@drawable/selector_bici_off" />
 
         <ImageView
             android:id="@+id/wheelingImg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
+            
             android:onClick="actionButton"
-            android:src="@drawable/selector_walking_off" />
+            android:src="@drawable/selector_accesible_off" />
     </LinearLayout>
 
     <LinearLayout
@@ -46,6 +49,7 @@
         android:padding="10dp" >
 
         <EditText
+            android:id="@+id/fromEditText"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:hint="Seleccione origen" />
@@ -59,6 +63,7 @@
         android:padding="10dp" >
 
         <EditText
+            android:id="@+id/toEditText"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:hint="Seleccione destino" />
@@ -70,8 +75,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="40dp"
-        android:background="@color/CityMove_rojo"
+        android:background="@drawable/selector_button"
         android:clickable="true"
+       
         android:gravity="center"
         android:onClick="actionButton"
         android:paddingBottom="13dp"

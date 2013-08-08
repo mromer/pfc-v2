@@ -6,10 +6,9 @@
 
 <color name="CityMove_textGrey">#f4f4f4</color>
 
-<!-- verde iconos -->
-<!-- 669900 -->
-<!-- azul iconos -->
-<!-- 45a7c2 -->
-
+<color name="CityMove_verde_iconos">#669900</color>
+<color name="CityMove_azul_iconos">#45a7c2</color>
+<color name="CityMove_gris_iconos">#b0b0b0</color>
+<color name="CityMove_blanco_iconos">#e6e6e6</color>
 
 </resources>

@@ -26,6 +26,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.mromer.bikeclimber.adapter.ListRutasDialogAdapter;
 import com.mromer.bikeclimber.bean.ElevationPoint;
 import com.mromer.bikeclimber.bean.ElevationSearchResponse;
+import com.mromer.bikeclimber.commons.ConstantesMain;
 import com.mromer.bikeclimber.task.GetRoutesTask;
 import com.mromer.bikeclimber.task.GetRoutesTaskResultI;
 import com.mromer.bikeclimber.utils.BitMapUtils;
@@ -52,21 +53,30 @@ public class MapActivity extends ActionBarActivity {
 	private LatLng origenLatLng = new LatLng(36.714686, -4.444313);
 	private LatLng destinoLatLng  = new LatLng(36.719829, -4.420002);	
 
-
+	private ActionBar actionBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
 
-		ActionBar actionBar = getSupportActionBar();		
+		actionBar = getSupportActionBar();	
+		
+		Bundle bundle = getIntent().getExtras();
 
-		int walking = 1;
-		if (walking == 1) {
-			actionBar.setIcon(R.drawable.walkingactionbar);
+		if (bundle.getInt(ConstantesMain.BUNDLE_MEDIO_SELECCIONADO) ==
+				ConstantesMain.MEDIO_ACCESIBLE) {
+			actionBar.setIcon(R.drawable.iconoaccesibleactionbar);	
+			
+		} else if (bundle.getInt(ConstantesMain.BUNDLE_MEDIO_SELECCIONADO) ==
+				ConstantesMain.MEDIO_BICI) {
+			actionBar.setIcon(R.drawable.biciactionbar);
+			
 		} else {
-			actionBar.setIcon(R.drawable.walkingactionbar)	;		
+			actionBar.setIcon(R.drawable.walkingactionbar);
 		}
+		
+		actionBar.setTitle("");
 
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -124,6 +134,7 @@ public class MapActivity extends ActionBarActivity {
 				// Pintamos la ruta seleccionada que coincide con la mejor				
 				pintarRuta(listElevationSearchResponse.get(bestRouteIndex), true);
 				pintarRutaNegra(listElevationSearchResponse.get(bestRouteIndex));
+				actionBar.setTitle("Ruta " + (bestRouteIndex+1));
 
 				rutaSeleccionadaIndex = bestRouteIndex;
 
@@ -231,7 +242,7 @@ public class MapActivity extends ActionBarActivity {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			super.onBackPressed();
-			
+
 			return true;
 
 		case R.id.menu_list:
@@ -387,7 +398,8 @@ public class MapActivity extends ActionBarActivity {
 
 					pintarRuta(listElevationSearchResponse.get(item), true);				
 					pintarRutaNegra(listElevationSearchResponse.get(item));
-
+					actionBar.setTitle("Ruta " + (item+1));
+					
 					pintarEscala(listElevationSearchResponse.get(item));
 
 				}
