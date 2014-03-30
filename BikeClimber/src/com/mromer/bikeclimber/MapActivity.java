@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -63,6 +64,9 @@ public class MapActivity extends ActionBarActivity {
 		actionBar = getSupportActionBar();	
 		
 		Bundle bundle = getIntent().getExtras();
+		
+		Location locFrom = bundle.getParcelable(ConstantesMain.BUNDLE_FROM);
+		Location locTo = bundle.getParcelable(ConstantesMain.BUNDLE_TO);
 
 		if (bundle.getInt(ConstantesMain.BUNDLE_MEDIO_SELECCIONADO) ==
 				ConstantesMain.MEDIO_ACCESIBLE) {
@@ -83,8 +87,11 @@ public class MapActivity extends ActionBarActivity {
 		mapa = ((SupportMapFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.map)).getMap();
 
-		origenLatLng = new LatLng(36.714686, -4.444313);
-		destinoLatLng  = new LatLng(36.719829, -4.420002);	
+//		origenLatLng = new LatLng(36.714686, -4.444313);
+//		destinoLatLng  = new LatLng(36.719829, -4.420002);
+		
+		origenLatLng = new LatLng(locFrom.getLatitude(), locFrom.getLongitude());
+		destinoLatLng  = new LatLng(locTo.getLatitude(), locTo.getLongitude());
 
 		mapa.addMarker(new MarkerOptions()
 		.position(origenLatLng)

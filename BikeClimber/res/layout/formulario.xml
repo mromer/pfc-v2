@@ -16,7 +16,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            
             android:onClick="actionButton"
             android:src="@drawable/selector_walking_on" />
 
@@ -27,7 +26,6 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:clickable="true"
-           
             android:onClick="actionButton"
             android:src="@drawable/selector_bici_off" />
 
@@ -36,7 +34,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            
             android:onClick="actionButton"
             android:src="@drawable/selector_accesible_off" />
     </LinearLayout>
@@ -48,7 +45,7 @@
         android:layout_marginTop="20dp"
         android:padding="10dp" >
 
-        <EditText
+        <TextView
             android:id="@+id/fromEditText"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
@@ -62,7 +59,7 @@
         android:layout_marginTop="10dp"
         android:padding="10dp" >
 
-        <EditText
+        <TextView
             android:id="@+id/toEditText"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
@@ -77,7 +74,6 @@
         android:layout_marginTop="40dp"
         android:background="@drawable/selector_button"
         android:clickable="true"
-       
         android:gravity="center"
         android:onClick="actionButton"
         android:paddingBottom="13dp"

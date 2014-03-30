@@ -9,6 +9,11 @@ public class ConstantesMain {
 	
 	// BUNDLE
 	public final static String BUNDLE_MEDIO_SELECCIONADO = "BUNDLE_MEDIO_SELECCIONADO";
+	public final static String BUNDLE_LATITUD = "BUNDLE_LATITUD";
+	public final static String BUNDLE_LONGITUD = "BUNDLE_LONGITUD";
+	
+	public final static String BUNDLE_FROM = "BUNDLE_FROM";
+	public final static String BUNDLE_TO = "BUNDLE_TO";
 	
 
 }
