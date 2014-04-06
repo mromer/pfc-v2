@@ -5,9 +5,6 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -15,29 +12,21 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.mromer.bikeclimber.adapter.ListRutasDialogAdapter;
-import com.mromer.bikeclimber.bean.ElevationPoint;
 import com.mromer.bikeclimber.bean.ElevationSearchResponse;
 import com.mromer.bikeclimber.commons.ConstantesMain;
 import com.mromer.bikeclimber.task.GetRoutesTask;
 import com.mromer.bikeclimber.task.GetRoutesTaskResultI;
-import com.mromer.bikeclimber.utils.BitMapUtils;
+import com.mromer.bikeclimber.utils.RouteDrawer;
 
-public class MapActivity extends ActionBarActivity {	
-
-	private static final int GROSOR_LINEA_NEGRA = 17;
-
-	private static final int GROSOR_LINEA_RUTA_SELECCIONADA = 15;
-	private static final int GROSOR_LINEA_RUTA_NO_SELECCIONADA = 5;
+public class MapActivity extends ActionBarActivity {
+	
 	private static final float ZOOM = 14f;
 
 	private GoogleMap mapa;
@@ -51,10 +40,14 @@ public class MapActivity extends ActionBarActivity {
 
 	private List<ElevationSearchResponse> listElevationSearchResponse;
 
-	private LatLng origenLatLng = new LatLng(36.714686, -4.444313);
-	private LatLng destinoLatLng  = new LatLng(36.719829, -4.420002);	
+	private LatLng origenLatLng, destinoLatLng;	
+	private String origenTitle, destinoTitle;
 
 	private ActionBar actionBar;
+
+	private String medioTransporte;
+	
+	private RouteDrawer routeDrawer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,19 +58,24 @@ public class MapActivity extends ActionBarActivity {
 		
 		Bundle bundle = getIntent().getExtras();
 		
-		Location locFrom = bundle.getParcelable(ConstantesMain.BUNDLE_FROM);
-		Location locTo = bundle.getParcelable(ConstantesMain.BUNDLE_TO);
-
-		if (bundle.getInt(ConstantesMain.BUNDLE_MEDIO_SELECCIONADO) ==
-				ConstantesMain.MEDIO_ACCESIBLE) {
+		Location locFrom = bundle.getParcelable(ConstantesMain.BUNDLE_FROM_LOCATION);
+		Location locTo = bundle.getParcelable(ConstantesMain.BUNDLE_TO_LOCATION);
+		origenTitle = bundle.getString(ConstantesMain.BUNDLE_FROM_TITLE);
+		destinoTitle  = bundle.getString(ConstantesMain.BUNDLE_TO_TITLE);
+		int medioSeleccionado = bundle.getInt(ConstantesMain.BUNDLE_MEDIO_SELECCIONADO);
+		
+		
+		if (medioSeleccionado == ConstantesMain.MEDIO_ACCESIBLE) {
 			actionBar.setIcon(R.drawable.iconoaccesibleactionbar);	
+			medioTransporte = ConstantesMain.MEDIO_ANDANDO_QUERY;
 			
-		} else if (bundle.getInt(ConstantesMain.BUNDLE_MEDIO_SELECCIONADO) ==
-				ConstantesMain.MEDIO_BICI) {
+		} else if (medioSeleccionado ==	ConstantesMain.MEDIO_BICI) {
 			actionBar.setIcon(R.drawable.biciactionbar);
+			medioTransporte = ConstantesMain.MEDIO_BICI_QUERY;
 			
 		} else {
 			actionBar.setIcon(R.drawable.walkingactionbar);
+			medioTransporte = ConstantesMain.MEDIO_ANDANDO_QUERY;
 		}
 		
 		actionBar.setTitle("");
@@ -95,11 +93,11 @@ public class MapActivity extends ActionBarActivity {
 
 		mapa.addMarker(new MarkerOptions()
 		.position(origenLatLng)
-		.title("Calle inicio"));
+		.title(origenTitle));
 
 		mapa.addMarker(new MarkerOptions()
 		.position(destinoLatLng)
-		.title("Calle fin"));
+		.title(destinoTitle));
 
 
 		mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(origenLatLng, ZOOM));
@@ -117,121 +115,47 @@ public class MapActivity extends ActionBarActivity {
 					lanzarAlerta("No existen rutas con los criterios seleccionados"); 
 
 					return;
-
 				}
 
 				bestRouteIndex = getBestRoute();
 				int indexRoute = 0;
+				
+				// Route drawer
+				routeDrawer = new RouteDrawer(MapActivity.this, mapa);
 
 				// Para cada ruta...
 				for (ElevationSearchResponse  elevationSearchResponse : listElevationSearchResponse) {					
 
 					if (indexRoute != bestRouteIndex) {
-						pintarRuta(elevationSearchResponse, false);
-					}	
-
-					// Aprobechamos para obtener la pendiente máxima de todas
-					if (elevationSearchResponse.pendienteMaxima > penditeneMaximaTotal) {
-						penditeneMaximaTotal = elevationSearchResponse.pendienteMaxima;
+						routeDrawer.pintarRuta(elevationSearchResponse, false);
 					}
 
+					// Aprobechamos para obtener la pendiente máxima de todas
+					if (elevationSearchResponse.getPendienteMaxima() > penditeneMaximaTotal) {
+						penditeneMaximaTotal = elevationSearchResponse.getPendienteMaxima();
+					}
 					indexRoute++;
 				}			
 
 				// Pintamos la ruta seleccionada que coincide con la mejor				
-				pintarRuta(listElevationSearchResponse.get(bestRouteIndex), true);
-				pintarRutaNegra(listElevationSearchResponse.get(bestRouteIndex));
+				routeDrawer.pintarRuta(listElevationSearchResponse.get(bestRouteIndex), true);
+				routeDrawer.pintarRutaNegra(listElevationSearchResponse.get(bestRouteIndex));
 				actionBar.setTitle("Ruta " + (bestRouteIndex+1));
 
 				rutaSeleccionadaIndex = bestRouteIndex;
 
-				pintarEscala(listElevationSearchResponse.get(bestRouteIndex));
+				routeDrawer.pintarEscala(listElevationSearchResponse.get(bestRouteIndex), penditeneMaximaTotal);
 
 				dialogoRutas = crearDialogoListadoRutas();
 				dialogoRutas.show();
-
 			}		
-
 
 			@Override
 			public void taskFailure(String error) {
 				// TODO Auto-generated method stub
-
 			}
-		}, origenLatLng, destinoLatLng).execute();
+		}, origenLatLng, destinoLatLng, medioTransporte).execute();
 	}
-
-
-	private void pintarRuta(ElevationSearchResponse ruta, boolean seleccionada) { 		
-
-
-		double pendienteMaxima = ruta.pendienteMaxima;
-
-		List<ElevationPoint> listadoPuntos = ruta.listadoPuntos;				
-
-		ElevationPoint elevationPointPrev = null;					
-
-		int grosor = getGrosor(seleccionada);
-
-		// Tenemos que pintar el último overlay la ruta seleccionada		
-		for (ElevationPoint elevationPoint : listadoPuntos) {
-
-			if (elevationPointPrev != null) {
-				LatLng puntoInicio = new LatLng(elevationPointPrev.location.latitud, elevationPointPrev.location.longitud);
-				LatLng puntoFin = new LatLng(elevationPoint.location.latitud, elevationPoint.location.longitud);
-				int color = getColorLinea(elevationPoint.pendiente, pendienteMaxima, seleccionada);
-
-				PolylineOptions polylineOptions = new PolylineOptions().add(puntoInicio, puntoFin);						
-				polylineOptions.width(grosor);
-				polylineOptions.color(color);		
-
-				if (seleccionada) {
-					// Indicamos que se pinte lo último
-					polylineOptions.zIndex(10);
-				} else {					
-					polylineOptions.zIndex(3);
-				}				
-
-				mapa.addPolyline(polylineOptions);				
-
-			}
-
-			elevationPointPrev = elevationPoint;			
-		}
-	}
-
-	private void pintarRutaNegra(ElevationSearchResponse ruta) {
-
-		List<ElevationPoint> listadoPuntos = ruta.listadoPuntos;				
-
-		ElevationPoint elevationPointPrev = null;		
-
-		// Tenemos que pintar el último overlay la ruta seleccionada
-		for (ElevationPoint elevationPoint : listadoPuntos) {
-
-			if (elevationPointPrev != null) {
-				LatLng puntoInicio = new LatLng(elevationPointPrev.location.latitud, elevationPointPrev.location.longitud);
-				LatLng puntoFin = new LatLng(elevationPoint.location.latitud, elevationPoint.location.longitud);
-				int color = 0xff000000;
-
-				PolylineOptions polylineOptions = new PolylineOptions().add(puntoInicio, puntoFin);						
-				polylineOptions.width(GROSOR_LINEA_NEGRA);
-				polylineOptions.color(color);
-
-				// Indicamos que se pinte lo último
-				polylineOptions.zIndex(5);
-
-				mapa.addPolyline(polylineOptions);
-
-
-			} else {
-				elevationPointPrev = null;
-			}
-
-			elevationPointPrev = elevationPoint;
-		}
-	}
-
 
 
 	@Override
@@ -266,48 +190,6 @@ public class MapActivity extends ActionBarActivity {
 	}
 
 
-	private int getColorLinea(double pendiente, double pendienteMaxima, boolean seleccionado) {
-
-		int R = 0;
-		int G = 255;		
-
-		pendiente = Math.abs(pendiente);
-		if (pendiente <= (pendienteMaxima/2)) {
-			R = (int) Math.round(255 * pendiente / (pendienteMaxima/2));
-
-		} else {
-			R = 255;
-			G = (int) Math.round(((pendiente-(pendienteMaxima/2)) * (-255) / (pendienteMaxima/2)) + 255);
-		}
-
-		if (seleccionado) {
-			return rgbSeleccionado(R, G, 0);
-		} else {
-			return rgbNoSeleccionado(R, G, 0);
-		}
-
-
-	}
-
-	public static int rgbSeleccionado(int red, int green, int blue) {
-		return (0xFF << 24) | (red << 16) | (green << 8) | blue;
-	}
-
-	public static int rgbNoSeleccionado(int red, int green, int blue) {
-		return (0xAA << 24) | (red << 16) | (green << 8) | blue;
-	}
-
-
-	private int getGrosor(boolean seleccionada) {
-
-		if (seleccionada) {
-			return GROSOR_LINEA_RUTA_SELECCIONADA;
-		} else {
-			return GROSOR_LINEA_RUTA_NO_SELECCIONADA;
-		}
-
-	}
-
 	private int getBestRoute() {	
 
 		int best = 0;
@@ -316,10 +198,10 @@ public class MapActivity extends ActionBarActivity {
 		for (ElevationSearchResponse elevationSearchResponse : listElevationSearchResponse) {	
 
 			if (i == 0) {
-				bestDificultad = elevationSearchResponse.dificuldad;
-			} else if (elevationSearchResponse.dificuldad < bestDificultad){
+				bestDificultad = elevationSearchResponse.getDificuldad();
+			} else if (elevationSearchResponse.getDificuldad() < bestDificultad){
 				best = i;
-				bestDificultad = elevationSearchResponse.dificuldad;
+				bestDificultad = elevationSearchResponse.getDificuldad();
 			}
 			i++;
 		}
@@ -341,28 +223,6 @@ public class MapActivity extends ActionBarActivity {
 		dialogo1.show(); 
 	}
 
-	private void pintarEscala (ElevationSearchResponse route) {		
-
-		Resources res = getResources();
-
-		Bitmap bitmapEscala = BitmapFactory.decodeResource(res, R.drawable.escala).copy(Bitmap.Config.ARGB_8888, true);		
-
-		Bitmap bitmapCuadradoMedia = BitmapFactory.decodeResource(res, R.drawable.marcadormedia).copy(Bitmap.Config.ARGB_8888, true);
-
-		Bitmap bitmapCuadradoMaxima = BitmapFactory.decodeResource(res, R.drawable.marcadormax).copy(Bitmap.Config.ARGB_8888, true);
-
-		new BitMapUtils().getOverlayGradiente(bitmapEscala, bitmapCuadradoMedia, bitmapCuadradoMaxima,
-				route.pendienteMedia, route.pendienteMaxima, penditeneMaximaTotal);
-
-		ImageView escala = (ImageView) findViewById(R.id.escala);
-		escala.setImageBitmap(bitmapEscala);	
-
-		TextView textoDerecha =  (TextView) findViewById(R.id.textoDer);
-		textoDerecha.setText((int) route.pendienteMaxima + "%");
-
-		TextView textoIzq =  (TextView) findViewById(R.id.textoIzq);
-		textoIzq.setText("0%");
-	}
 
 	/**
 	 * Método que abre el dialog de selección de ruta.
@@ -385,11 +245,11 @@ public class MapActivity extends ActionBarActivity {
 
 					mapa.addMarker(new MarkerOptions()
 					.position(origenLatLng)
-					.title("Calle inicio"));
+					.title(origenTitle));
 
 					mapa.addMarker(new MarkerOptions()
 					.position(destinoLatLng)
-					.title("Calle fin"));
+					.title(destinoTitle));
 
 					rutaSeleccionadaIndex = item;
 
@@ -398,16 +258,16 @@ public class MapActivity extends ActionBarActivity {
 					for (ElevationSearchResponse route: listElevationSearchResponse){
 
 						if (item != i) {
-							pintarRuta(route, false);
+							routeDrawer.pintarRuta(route, false);
 						}
 						i++;
 					}
 
-					pintarRuta(listElevationSearchResponse.get(item), true);				
-					pintarRutaNegra(listElevationSearchResponse.get(item));
+					routeDrawer.pintarRuta(listElevationSearchResponse.get(item), true);				
+					routeDrawer.pintarRutaNegra(listElevationSearchResponse.get(item));
 					actionBar.setTitle("Ruta " + (item+1));
 					
-					pintarEscala(listElevationSearchResponse.get(item));
+					routeDrawer.pintarEscala(listElevationSearchResponse.get(item), penditeneMaximaTotal);
 
 				}
 

@@ -19,8 +19,7 @@ import com.mromer.bikeclimber.R;
 import com.mromer.bikeclimber.bean.ElevationSearchResponse;
 
 
-public class ListRutasDialogAdapter extends BaseAdapter implements OnClickListener {
-
+public class ListRutasDialogAdapter extends BaseAdapter implements OnClickListener {	
 
 	private Context context;
 
@@ -69,7 +68,7 @@ public class ListRutasDialogAdapter extends BaseAdapter implements OnClickListen
 		textoFijoDistancia.setText(context.getString(R.string.MAPA_DIALOG_DISTANCIA));
 		
 		TextView textoDistancia = (TextView) convertView.findViewById(R.id.distancia);			
-		textoDistancia.setText(entry.distanciaText);
+		textoDistancia.setText(entry.getDistanciaText());
 
 
 		// La mejor ruta lleva un icono
@@ -84,14 +83,14 @@ public class ListRutasDialogAdapter extends BaseAdapter implements OnClickListen
 
 
 		ImageView iconoMedia = (ImageView) convertView.findViewById(R.id.pendientemedia);		
-		iconoMedia.setImageDrawable(getDrawablePendienteMedia(entry.pendienteMedia));	
+		iconoMedia.setImageDrawable(getDrawablePendienteMedia(entry.getPendienteMedia()));	
 		TextView textoPendienteMedia = (TextView) convertView.findViewById(R.id.pendientemediaTexto);				
-		textoPendienteMedia.setText(context.getString(R.string.MAPA_DIALOG_MEDIA) + " " + (int) Math.round(entry.pendienteMedia) + "%");
+		textoPendienteMedia.setText(context.getString(R.string.MAPA_DIALOG_MEDIA) + " " + (int) Math.round(entry.getPendienteMedia()) + "%");
 		
 		ImageView iconoMax = (ImageView) convertView.findViewById(R.id.pendientemaxima);		
-		iconoMax.setImageDrawable(getDrawablePendienteMedia(entry.pendienteMaxima));
+		iconoMax.setImageDrawable(getDrawablePendienteMedia(entry.getPendienteMaxima()));
 		TextView textoPendienteMaxima = (TextView) convertView.findViewById(R.id.pendientemaximaTexto);				
-		textoPendienteMaxima.setText(context.getString(R.string.MAPA_DIALOG_MAX) + " " + (int) Math.round(entry.pendienteMaxima) + "%");
+		textoPendienteMaxima.setText(context.getString(R.string.MAPA_DIALOG_MAX) + " " + (int) Math.round(entry.getPendienteMaxima()) + "%");
 				
 		LinearLayout capa = (LinearLayout) convertView.findViewById(R.id.capa1);	
 
@@ -101,16 +100,14 @@ public class ListRutasDialogAdapter extends BaseAdapter implements OnClickListen
 
 		} else {			
 			capa.setBackgroundResource(R.drawable.list_selector_color_dialog);			
-		}
-				
+		}				
 	
 		return convertView;
 	}
 
 	@Override
 	public void onClick(View arg0) {
-		Log.d("Debug", "Se ha hecho click en el listado" + arg0.getId());		
-
+		Log.d("Debug", "Se ha hecho click en el listado" + arg0.getId());
 	}
 	
 

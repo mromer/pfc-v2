@@ -7,19 +7,86 @@ import com.google.gson.annotations.SerializedName;
 public class ElevationSearchResponse {
 	
 	@SerializedName("results")
-	public List<ElevationPoint> listadoPuntos;
+	private List<ElevationPoint> listadoPuntos;
 	
-	public double distanciaSubidaAcumulada;
+	private double distanciaSubidaAcumulada;
 	
-	public double direfenciasDeAlturasAcumuladas;
+	private double direfenciasDeAlturasAcumuladas;
 	
-	public double dificuldad;
+	private double dificuldad;
 	
-	public double pendienteMedia;
+	private double pendienteMedia;
 	
-	public double pendienteMaxima;
+	private double pendienteMaxima;
 	
-	public String distanciaText;
+	private String distanciaText;
 	
-	public int distanciaValue;
+	private int distanciaValue;
+
+	public List<ElevationPoint> getListadoPuntos() {
+		return listadoPuntos;
+	}
+
+	public void setListadoPuntos(List<ElevationPoint> listadoPuntos) {
+		this.listadoPuntos = listadoPuntos;
+	}
+
+	public double getDistanciaSubidaAcumulada() {
+		return distanciaSubidaAcumulada;
+	}
+
+	public void setDistanciaSubidaAcumulada(double distanciaSubidaAcumulada) {
+		this.distanciaSubidaAcumulada = distanciaSubidaAcumulada;
+	}
+
+	public double getDirefenciasDeAlturasAcumuladas() {
+		return direfenciasDeAlturasAcumuladas;
+	}
+
+	public void setDirefenciasDeAlturasAcumuladas(
+			double direfenciasDeAlturasAcumuladas) {
+		this.direfenciasDeAlturasAcumuladas = direfenciasDeAlturasAcumuladas;
+	}
+
+	public double getDificuldad() {
+		return dificuldad;
+	}
+
+	public void setDificuldad(double dificuldad) {
+		this.dificuldad = dificuldad;
+	}
+
+	public double getPendienteMedia() {
+		return pendienteMedia;
+	}
+
+	public void setPendienteMedia(double pendienteMedia) {
+		this.pendienteMedia = pendienteMedia;
+	}
+
+	public double getPendienteMaxima() {
+		return pendienteMaxima;
+	}
+
+	public void setPendienteMaxima(double pendienteMaxima) {
+		this.pendienteMaxima = pendienteMaxima;
+	}
+
+	public String getDistanciaText() {
+		return distanciaText;
+	}
+
+	public void setDistanciaText(String distanciaText) {
+		this.distanciaText = distanciaText;
+	}
+
+	public int getDistanciaValue() {
+		return distanciaValue;
+	}
+
+	public void setDistanciaValue(int distanciaValue) {
+		this.distanciaValue = distanciaValue;
+	}
+	
+	
 }

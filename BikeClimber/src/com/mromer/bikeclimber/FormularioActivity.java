@@ -44,7 +44,7 @@ public class FormularioActivity extends ActionBarActivity {
 			
 			@Override
 			public void onClick(View v) {
-				openAddressDialog("Seleccione origen", "ACTION_FROM");				
+				openAddressDialog("Seleccione origen", AddressDialogFragment.ACTION_FROM);				
 			}			
 		});
 		
@@ -53,7 +53,7 @@ public class FormularioActivity extends ActionBarActivity {
 			
 			@Override
 			public void onClick(View v) {
-				openAddressDialog("Seleccione destino", "ACTION_TO");				
+				openAddressDialog("Seleccione destino", AddressDialogFragment.ACTION_TO);				
 			}			
 		});		
 
@@ -96,8 +96,10 @@ public class FormularioActivity extends ActionBarActivity {
 				Intent mIntent = new Intent(this, MapActivity.class);
 				Bundle mBundle = new Bundle();
 				mBundle.putInt(ConstantesMain.BUNDLE_MEDIO_SELECCIONADO, medioSeleccionado);
-				mBundle.putParcelable(ConstantesMain.BUNDLE_FROM, loc1);
-				mBundle.putParcelable(ConstantesMain.BUNDLE_TO, loc2);
+				mBundle.putParcelable(ConstantesMain.BUNDLE_FROM_LOCATION, loc1);
+				mBundle.putParcelable(ConstantesMain.BUNDLE_TO_LOCATION, loc2);
+				mBundle.putString(ConstantesMain.BUNDLE_FROM_TITLE, editTextFrom.getText().toString());
+				mBundle.putString(ConstantesMain.BUNDLE_TO_TITLE, editTextTo.getText().toString());
 				mIntent.putExtras(mBundle);
 
 				startActivity(mIntent);
@@ -132,7 +134,7 @@ public class FormularioActivity extends ActionBarActivity {
 	}
 	
 	public void fillAddress(String action, String addressString, Address addressValue) {
-		if (action.equals("ACTION_FROM")) {
+		if (action.equals(AddressDialogFragment.ACTION_FROM)) {
 			editTextFrom.setText(addressString);
 			resultAddressFrom = addressValue;
 		} else {

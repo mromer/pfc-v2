@@ -22,6 +22,9 @@ import com.mromer.bikeclimber.utils.GeocodeUtil;
 
 public class AddressDialogFragment extends DialogFragment {
 	
+	public static final String ACTION_FROM = "ACTION_FROM";
+	public static final String ACTION_TO = "ACTION_TO";
+	
 	private final String NO_ITEMS_FINDED = "No result for the search";
 
 	int mNum;
@@ -95,6 +98,7 @@ public class AddressDialogFragment extends DialogFragment {
 		TextView b = (TextView) v.findViewById(R.id.searchBtn);
 		b.setOnClickListener(new OnClickListener() {			
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public void onClick(View v) {
 				listSearch = new ArrayList<String>();
@@ -113,7 +117,7 @@ public class AddressDialogFragment extends DialogFragment {
 				if (listSearch.isEmpty()) {
 					listSearch.add(NO_ITEMS_FINDED);
 				}
-				ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(), 
+				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), 
 						android.R.layout.simple_list_item_1, listSearch);
 				
 				listView.setAdapter(adapter);

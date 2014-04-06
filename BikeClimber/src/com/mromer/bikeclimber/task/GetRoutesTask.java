@@ -23,12 +23,15 @@ public class GetRoutesTask {
 	private GetRoutesTaskResultI callBack;
 	private LatLng inicio, fin;
 	private Context contexto;
+	private String medioTransporte;
 	
-	public GetRoutesTask (Context contexto, GetRoutesTaskResultI callBack, LatLng inicio, LatLng fin) {
+	public GetRoutesTask (Context contexto, GetRoutesTaskResultI callBack, 
+			LatLng inicio, LatLng fin, String medioTransporte) {
 		this.callBack = callBack;
 		this.inicio = inicio;
 		this.fin = fin;
 		this.contexto = contexto;
+		this.medioTransporte = medioTransporte;
 	}
 
 	public void execute() {
@@ -60,7 +63,7 @@ public class GetRoutesTask {
 				String json = peticionesGmapsDirection.obtenerRutas(Double.toString(inicio.latitude)
 						, Double.toString(inicio.longitude)
 						, Double.toString(fin.latitude)
-						, Double.toString(fin.longitude));
+						, Double.toString(fin.longitude), medioTransporte);
 
 
 				RoutesSearchResponse routesSearchResponse = peticionesGmapsDirection.obtenerGson(json);
@@ -90,8 +93,8 @@ public class GetRoutesTask {
 
 					ElevationSearchResponse elevationSearchResponse = peticionesGmapsElevation.obtenerGson(jsonElevation);
 
-					elevationSearchResponse.distanciaText = routesSearchResponse.listadoRoutes.get(j).listadoLeg.get(0).distance.distanciaText;
-					elevationSearchResponse.distanciaValue = routesSearchResponse.listadoRoutes.get(j).listadoLeg.get(0).distance.distanciaValue;
+					elevationSearchResponse.setDistanciaText(routesSearchResponse.listadoRoutes.get(j).listadoLeg.get(0).distance.distanciaText);
+					elevationSearchResponse.setDistanciaValue(routesSearchResponse.listadoRoutes.get(j).listadoLeg.get(0).distance.distanciaValue);
 
 					listRouteElevation.add(elevationSearchResponse);
 
@@ -108,7 +111,7 @@ public class GetRoutesTask {
 
 					int i = 0;
 					ElevationPoint puntoAnterior = null; 
-					for(ElevationPoint elevationPoint : evationSearchResponse.listadoPuntos) {				
+					for(ElevationPoint elevationPoint : evationSearchResponse.getListadoPuntos()) {				
 						if (i == 0) {								
 							i++;
 						} else {						 				
@@ -121,21 +124,21 @@ public class GetRoutesTask {
 
 
 						// Pendiente máxima de la ruta
-						if (elevationPoint.pendiente > evationSearchResponse.pendienteMaxima ) {
-							evationSearchResponse.pendienteMaxima = elevationPoint.pendiente;
+						if (elevationPoint.pendiente > evationSearchResponse.getPendienteMaxima() ) {
+							evationSearchResponse.setPendienteMaxima(elevationPoint.pendiente);
 						}
 
 					}
 
-					evationSearchResponse.distanciaSubidaAcumulada = distanciaSubidaAcumuladaParcial;
-					evationSearchResponse.direfenciasDeAlturasAcumuladas = direfenciasDeAlturasAcumuladasParcial;
+					evationSearchResponse.setDistanciaSubidaAcumulada(distanciaSubidaAcumuladaParcial);
+					evationSearchResponse.setDirefenciasDeAlturasAcumuladas(direfenciasDeAlturasAcumuladasParcial);
 
 					if (distanciaSubidaAcumuladaParcial == 0) {
-						evationSearchResponse.dificuldad = 0;			
-						evationSearchResponse.pendienteMedia = 0;	
+						evationSearchResponse.setDificuldad(0);			
+						evationSearchResponse.setPendienteMedia(0);	
 					} else {
-						evationSearchResponse.dificuldad = direfenciasDeAlturasAcumuladasParcial / distanciaSubidaAcumuladaParcial;			
-						evationSearchResponse.pendienteMedia = direfenciasDeAlturasAcumuladasParcial * 100 / distanciaSubidaAcumuladaParcial;	
+						evationSearchResponse.setDificuldad(direfenciasDeAlturasAcumuladasParcial / distanciaSubidaAcumuladaParcial);			
+						evationSearchResponse.setPendienteMedia(direfenciasDeAlturasAcumuladasParcial * 100 / distanciaSubidaAcumuladaParcial);	
 					}
 
 				}

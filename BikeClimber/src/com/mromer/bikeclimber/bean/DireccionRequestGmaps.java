@@ -19,7 +19,8 @@ import com.google.gson.Gson;
 
 public class DireccionRequestGmaps {	
 
-	public String obtenerRutas(String latitudDesde, String longitudDesde, String latitudHasta, String longitudHasta) throws Exception {	
+	public String obtenerRutas(String latitudDesde, String longitudDesde, 
+			String latitudHasta, String longitudHasta, String medioTransporte) throws Exception {	
 		
 		HttpParams httpParameters = new BasicHttpParams();
 		// Set the timeout in milliseconds until a connection is established.
@@ -36,7 +37,7 @@ public class DireccionRequestGmaps {
 		String requestParameters =
 				"origin=" + latitudDesde + "," + longitudDesde + 
 				"&destination=" + latitudHasta + "," + longitudHasta + 
-				"&mode=walking" +
+				"&mode=" + medioTransporte +
 				"&alternatives=true" +
 				"&sensor=false";
 
