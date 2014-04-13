@@ -1,36 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/general_layout"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="9dp"
     android:background="#e3e0e0"
     android:orientation="vertical" >
 
+    <include layout="@layout/cabecera_item_ruta" />
+
     <LinearLayout
-        android:id="@+id/capa1"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="9dp"
-        android:orientation="vertical" >
+        android:orientation="horizontal"
+        android:padding="10dp" >
 
-        <include layout="@layout/cabecera_item_ruta" />
+        <!-- distancia -->
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="10dp" >
+        <include layout="@layout/distancia" />
 
-            <!-- distancia -->
+        <!-- pendiente media -->
 
-            <include layout="@layout/distancia" />
+        <include layout="@layout/pendiente_media" />
+        <!-- pendiente máxima -->
 
-            <!-- pendiente media -->
-
-            <include layout="@layout/pendiente_media" />
-            <!-- pendiente máxima -->
-
-            <include layout="@layout/pendiente_maxima" />
-        </LinearLayout>
+        <include layout="@layout/pendiente_maxima" />
     </LinearLayout>
 
 </LinearLayout>

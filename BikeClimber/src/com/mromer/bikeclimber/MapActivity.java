@@ -45,7 +45,8 @@ public class MapActivity extends ActionBarActivity {
 
 	private ActionBar actionBar;
 
-	private String medioTransporte;
+	private int medioTransporte;
+	private String medioTransporteQuery;
 	
 	private RouteDrawer routeDrawer;
 
@@ -62,20 +63,20 @@ public class MapActivity extends ActionBarActivity {
 		Location locTo = bundle.getParcelable(ConstantesMain.BUNDLE_TO_LOCATION);
 		origenTitle = bundle.getString(ConstantesMain.BUNDLE_FROM_TITLE);
 		destinoTitle  = bundle.getString(ConstantesMain.BUNDLE_TO_TITLE);
-		int medioSeleccionado = bundle.getInt(ConstantesMain.BUNDLE_MEDIO_SELECCIONADO);
+		medioTransporte = bundle.getInt(ConstantesMain.BUNDLE_MEDIO_SELECCIONADO);
 		
 		
-		if (medioSeleccionado == ConstantesMain.MEDIO_ACCESIBLE) {
+		if (medioTransporte == ConstantesMain.MEDIO_ACCESIBLE) {
 			actionBar.setIcon(R.drawable.iconoaccesibleactionbar);	
-			medioTransporte = ConstantesMain.MEDIO_ANDANDO_QUERY;
+			medioTransporteQuery = ConstantesMain.MEDIO_ANDANDO_QUERY;
 			
-		} else if (medioSeleccionado ==	ConstantesMain.MEDIO_BICI) {
+		} else if (medioTransporte ==	ConstantesMain.MEDIO_BICI) {
 			actionBar.setIcon(R.drawable.biciactionbar);
-			medioTransporte = ConstantesMain.MEDIO_BICI_QUERY;
+			medioTransporteQuery = ConstantesMain.MEDIO_BICI_QUERY;
 			
 		} else {
 			actionBar.setIcon(R.drawable.walkingactionbar);
-			medioTransporte = ConstantesMain.MEDIO_ANDANDO_QUERY;
+			medioTransporteQuery = ConstantesMain.MEDIO_ANDANDO_QUERY;
 		}
 		
 		actionBar.setTitle("");
@@ -130,7 +131,7 @@ public class MapActivity extends ActionBarActivity {
 						routeDrawer.pintarRuta(elevationSearchResponse, false);
 					}
 
-					// Aprobechamos para obtener la pendiente máxima de todas
+					// Aprovechamos para obtener la pendiente máxima de todas
 					if (elevationSearchResponse.getPendienteMaxima() > penditeneMaximaTotal) {
 						penditeneMaximaTotal = elevationSearchResponse.getPendienteMaxima();
 					}
@@ -154,7 +155,7 @@ public class MapActivity extends ActionBarActivity {
 			public void taskFailure(String error) {
 				// TODO Auto-generated method stub
 			}
-		}, origenLatLng, destinoLatLng, medioTransporte).execute();
+		}, origenLatLng, destinoLatLng, medioTransporteQuery).execute();
 	}
 
 
@@ -230,7 +231,8 @@ public class MapActivity extends ActionBarActivity {
 	public  Dialog crearDialogoListadoRutas( ) {
 
 		ListRutasDialogAdapter listAlertDialogAdapter = new ListRutasDialogAdapter(this
-				, listElevationSearchResponse, rutaSeleccionadaIndex);		
+				, listElevationSearchResponse, rutaSeleccionadaIndex, medioTransporte
+				, bestRouteIndex);		
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 

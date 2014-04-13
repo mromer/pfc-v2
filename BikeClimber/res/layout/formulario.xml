@@ -1,7 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:layout_gravity="center_horizontal"
     android:background="#c7c7c7"
+    android:gravity="center_horizontal"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -38,33 +40,25 @@
             android:src="@drawable/selector_accesible_off" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/fromTextView"
+        android:layout_width="260dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
-        android:padding="10dp" >
+        android:background="@drawable/selector_formulario_text_view"
+        android:hint="Seleccione origen"
+        android:padding="10dp"
+        android:textSize="@dimen/text_size_medium" />
 
-        <TextView
-            android:id="@+id/fromEditText"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:hint="Seleccione origen" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/toTextView"
+        android:layout_width="260dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
-        android:padding="10dp" >
-
-        <TextView
-            android:id="@+id/toEditText"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:hint="Seleccione destino" />
-    </LinearLayout>
+        android:background="@drawable/selector_formulario_text_view"
+        android:hint="Seleccione destino"
+        android:padding="10dp"
+        android:textSize="@dimen/text_size_medium" />
 
     <TextView
         android:id="@+id/continuarBtn"

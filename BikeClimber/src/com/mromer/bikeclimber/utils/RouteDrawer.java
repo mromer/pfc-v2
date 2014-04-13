@@ -160,7 +160,7 @@ public class RouteDrawer {
 		escala.setImageBitmap(bitmapEscala);	
 
 		TextView textoDerecha =  (TextView) context.findViewById(R.id.textoDer);
-		textoDerecha.setText((int) route.getPendienteMaxima() + "%");
+		textoDerecha.setText((int) Math.round(penditeneMaximaTotal) + "%");
 
 		TextView textoIzq =  (TextView) context.findViewById(R.id.textoIzq);
 		textoIzq.setText("0%");

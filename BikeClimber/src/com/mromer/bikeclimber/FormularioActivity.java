@@ -37,8 +37,8 @@ public class FormularioActivity extends ActionBarActivity {
 		actionBar.setDisplayUseLogoEnabled(false);
 		actionBar.setDisplayShowHomeEnabled(false);
 
-		editTextFrom = (TextView) findViewById(R.id.fromEditText);		
-		editTextTo = (TextView) findViewById(R.id.toEditText);			
+		editTextFrom = (TextView) findViewById(R.id.fromTextView);		
+		editTextTo = (TextView) findViewById(R.id.toTextView);			
 
 		editTextFrom.setOnClickListener(new OnClickListener() {
 			
