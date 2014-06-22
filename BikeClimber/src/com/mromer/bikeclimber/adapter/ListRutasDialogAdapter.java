@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.mromer.bikeclimber.R;
 import com.mromer.bikeclimber.bean.ElevationSearchResponse;
 import com.mromer.bikeclimber.commons.DificultadHelper;
+import com.mromer.bikeclimber.utils.StringUtil;
 
 
 public class ListRutasDialogAdapter extends BaseAdapter implements OnClickListener {	
@@ -105,7 +106,7 @@ public class ListRutasDialogAdapter extends BaseAdapter implements OnClickListen
 		// Set the text		
 		TextView textoPendienteMaxima = (TextView) convertView.findViewById(R.id.pendientemaximaTexto);				
 		textoPendienteMaxima.setText(context.getString(R.string.MAPA_DIALOG_MAX) 
-				+ " " + (int) Math.round(entry.getPendienteMaxima()) + "%");
+				+ " " + StringUtil.oneDecimal(entry.getPendienteMaxima()) + "%");
 		// Set the icon
 		Drawable icon = getIconoPendiente(entry.getPendienteMaxima(), medioTransporte);		
 		textoPendienteMaxima.setCompoundDrawablesWithIntrinsicBounds( null, icon, null, null);
@@ -116,7 +117,7 @@ public class ListRutasDialogAdapter extends BaseAdapter implements OnClickListen
 		// Set the text
 		TextView textoPendienteMedia = (TextView) convertView.findViewById(R.id.pendientemediaTexto);				
 		textoPendienteMedia.setText(context.getString(R.string.MAPA_DIALOG_MEDIA) 
-				+ " " + (int) Math.round(entry.getPendienteMedia()) + "%");
+				+ " " + StringUtil.oneDecimal(entry.getPendienteMedia()) + "%");
 		// Set the icon
 		Drawable icon = getIconoPendiente(entry.getPendienteMedia(), medioTransporte);		
 		textoPendienteMedia.setCompoundDrawablesWithIntrinsicBounds( null, icon, null, null);
