@@ -3,7 +3,6 @@ package com.mromer.bikeclimber.adapter;
 import java.util.List;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -134,8 +133,7 @@ public class ListRutasDialogAdapter extends BaseAdapter implements OnClickListen
 	 * Devuelve un drawable dependiendo de la pendiente y el medio
 	 * de transporte.
 	 * */
-	public Drawable getIconoPendiente(double pendiente, int medioTransporte) {
-		Resources res = context.getResources();
-		return DificultadHelper.getIconoDificultad(res, pendiente, medioTransporte);
+	public Drawable getIconoPendiente(double pendiente, int medioTransporte) {		
+		return DificultadHelper.getIconoDificultad(context, pendiente, medioTransporte);
 	}
 }

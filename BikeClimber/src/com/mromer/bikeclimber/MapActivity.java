@@ -174,7 +174,6 @@ public class MapActivity extends ActionBarActivity {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			super.onBackPressed();
-
 			return true;
 
 		case R.id.menu_list:
@@ -182,12 +181,21 @@ public class MapActivity extends ActionBarActivity {
 				dialogoRutas = crearDialogoListadoRutas();
 				dialogoRutas.show();
 			}
-
+			return true;
+			
+		case R.id.action_settings:
+			setConfiguracion();
 			return true;
 
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+
+	private void setConfiguracion() {
+		// TODO Auto-generated method stub
+		
 	}
 
 

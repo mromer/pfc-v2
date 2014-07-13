@@ -1,0 +1,55 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="Andando" >
+        <EditTextPreference
+            android:dialogTitle="Facil"
+            android:key="andando_facil"
+            android:summary="Title"
+            android:title="Facil" />
+        <EditTextPreference
+            android:dialogTitle="Medio"
+            android:key="andando_medio"
+            android:summary="Title"
+            android:title="Medio" />
+        <EditTextPreference
+            android:dialogTitle="Dificil"
+            android:key="andando_dificil"
+            android:summary="Title"
+            android:title="Dificil" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Bici" >
+        <EditTextPreference
+            android:dialogTitle="Facil"
+            android:key="bici_facil"
+            android:summary="Title"
+            android:title="Facil" />
+        <EditTextPreference
+            android:dialogTitle="Medio"
+            android:key="bici_medio"
+            android:summary="Title"
+            android:title="Medio" />
+        <EditTextPreference
+            android:dialogTitle="Dificil"
+            android:key="bici_dificil"
+            android:summary="Title"
+            android:title="Dificil" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Accesible" >
+        <EditTextPreference
+            android:dialogTitle="Facil"
+            android:key="accesible_facil"
+            android:summary="Title"
+            android:title="Facil" />
+        <EditTextPreference
+            android:dialogTitle="Medio"
+            android:key="accesible_medio"
+            android:summary="Title"
+            android:title="Medio" />
+        <EditTextPreference
+            android:dialogTitle="Dificil"
+            android:key="accesible_dificil"
+            android:summary="Title"
+            android:title="Dificil" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
