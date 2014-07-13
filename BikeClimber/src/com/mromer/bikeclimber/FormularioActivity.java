@@ -81,10 +81,8 @@ public class FormularioActivity extends ActionBarActivity {
 	    }
 	}
 	
-	private void setConfiguracion() {
-		
-		startActivity(new Intent(this, PreferenceWithHeaders.class));
-	
+	private void setConfiguracion() {		
+		startActivity(new Intent(this, PreferenceWithHeaders.class));	
 	}
 
 	private void openAddressDialog(String title, String action) {		

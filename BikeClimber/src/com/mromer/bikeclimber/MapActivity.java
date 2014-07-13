@@ -5,6 +5,7 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -194,8 +195,7 @@ public class MapActivity extends ActionBarActivity {
 
 
 	private void setConfiguracion() {
-		// TODO Auto-generated method stub
-		
+		startActivity(new Intent(this, PreferenceWithHeaders.class));		
 	}
 
 

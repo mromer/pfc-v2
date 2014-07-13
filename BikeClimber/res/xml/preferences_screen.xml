@@ -2,51 +2,69 @@
 
     <PreferenceCategory android:title="Andando" >
         <EditTextPreference
+            android:defaultValue="4"
             android:dialogTitle="Facil"
+            android:inputType="number"
             android:key="andando_facil"
             android:summary="Title"
             android:title="Facil" />
         <EditTextPreference
+            android:defaultValue="8"
             android:dialogTitle="Medio"
+            android:inputType="number"
             android:key="andando_medio"
             android:summary="Title"
             android:title="Medio" />
         <EditTextPreference
+            android:defaultValue="20"
             android:dialogTitle="Dificil"
+            android:inputType="number"
             android:key="andando_dificil"
             android:summary="Title"
             android:title="Dificil" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Bici" >
         <EditTextPreference
+            android:defaultValue="4"
             android:dialogTitle="Facil"
+            android:inputType="number"
             android:key="bici_facil"
             android:summary="Title"
             android:title="Facil" />
         <EditTextPreference
+            android:defaultValue="8"
             android:dialogTitle="Medio"
+            android:inputType="number"
             android:key="bici_medio"
             android:summary="Title"
             android:title="Medio" />
         <EditTextPreference
+            android:defaultValue="20"
             android:dialogTitle="Dificil"
+            android:inputType="number"
             android:key="bici_dificil"
             android:summary="Title"
             android:title="Dificil" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Accesible" >
         <EditTextPreference
+            android:defaultValue="2"
             android:dialogTitle="Facil"
+            android:inputType="number"
             android:key="accesible_facil"
             android:summary="Title"
             android:title="Facil" />
         <EditTextPreference
+            android:defaultValue="4"
             android:dialogTitle="Medio"
+            android:inputType="number"
             android:key="accesible_medio"
             android:summary="Title"
             android:title="Medio" />
         <EditTextPreference
+            android:defaultValue="20"
             android:dialogTitle="Dificil"
+            android:inputType="number"
             android:key="accesible_dificil"
             android:summary="Title"
             android:title="Dificil" />
