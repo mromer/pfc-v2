@@ -104,7 +104,7 @@ public class MapActivity extends ActionBarActivity {
 
 		mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(origenLatLng, ZOOM));
 
-		new GetRoutesTask(this, new GetRoutesTaskResultI() {
+		new GetRoutesTask(this, "http://maps.googleapis.com", new GetRoutesTaskResultI() {
 
 			@Override
 			public void taskSuccess(List<ElevationSearchResponse> result) {

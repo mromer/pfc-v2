@@ -24,14 +24,16 @@ public class GetRoutesTask {
 	private LatLng inicio, fin;
 	private Context contexto;
 	private String medioTransporte;
+	private String host;
 	
-	public GetRoutesTask (Context contexto, GetRoutesTaskResultI callBack, 
+	public GetRoutesTask (Context contexto, String host, GetRoutesTaskResultI callBack, 
 			LatLng inicio, LatLng fin, String medioTransporte) {
 		this.callBack = callBack;
 		this.inicio = inicio;
 		this.fin = fin;
 		this.contexto = contexto;
 		this.medioTransporte = medioTransporte;
+		this.host = host;
 	}
 
 	public void execute() {
@@ -60,10 +62,12 @@ public class GetRoutesTask {
 
 				// Prueba para Málaga
 //				String json = peticionesGmapsDirection.obtenerRutas("36.714686", "-4.444313", "36.719829", "-4.420002");
-				String json = peticionesGmapsDirection.obtenerRutas(Double.toString(inicio.latitude)
-						, Double.toString(inicio.longitude)
-						, Double.toString(fin.latitude)
-						, Double.toString(fin.longitude), medioTransporte);
+				String json = peticionesGmapsDirection.obtenerRutas(
+						host,
+						Double.toString(inicio.latitude),
+						Double.toString(inicio.longitude),
+						Double.toString(fin.latitude),
+						Double.toString(fin.longitude), medioTransporte);
 
 
 				RoutesSearchResponse routesSearchResponse = peticionesGmapsDirection.obtenerGson(json);
@@ -89,7 +93,7 @@ public class GetRoutesTask {
 				ElevationRequestGmaps peticionesGmapsElevation = new ElevationRequestGmaps();
 				int j = 0;
 				for (String polyline: listPolyline) {
-					String jsonElevation = peticionesGmapsElevation.getElevationPolyline(polyline);
+					String jsonElevation = peticionesGmapsElevation.getElevationPolyline(host, polyline);
 
 					ElevationSearchResponse elevationSearchResponse = peticionesGmapsElevation.obtenerGson(jsonElevation);
 
@@ -154,8 +158,17 @@ public class GetRoutesTask {
 
 
 		protected void onPostExecute(List<ElevationSearchResponse> result) {
-			progress.dismiss();
-			
+			try {
+				if (progress != null && progress.isShowing()) {
+					progress.dismiss();
+				}
+			} catch (final IllegalArgumentException e) {
+				// Handle or log or ignore
+			} catch (final Exception e) {
+				// Handle or log or ignore
+			} finally {
+				progress = null;
+			}			
 			callBack.taskSuccess(result);
 		}
 	}

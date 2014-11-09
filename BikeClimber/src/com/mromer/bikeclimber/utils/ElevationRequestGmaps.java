@@ -20,68 +20,8 @@ import com.mromer.bikeclimber.bean.ElevationSearchResponse;
 
 
 public class ElevationRequestGmaps {	
-
-	public String getElevationPath(String latitudDesde, String longitudDesde, String latitudHasta, String longitudHasta) throws Exception {
-		
-		HttpParams httpParameters = new BasicHttpParams();
-		// Set the timeout in milliseconds until a connection is established.
-		// The default value is zero, that means the timeout is not used. 
-		int timeoutConnection = 10000;
-		HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
-		// Set the default socket timeout (SO_TIMEOUT) 
-		// in milliseconds which is the timeout for waiting for data.
-		int timeoutSocket = 10000;
-		HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
-		
-		String samples = "10";
-		
-		String endpoint = "http://maps.googleapis.com/maps/api/elevation/json";
-		String requestParameters = "path=" + latitudDesde + "," + longitudDesde + "%7C" + 
-				latitudHasta + "," + longitudHasta + "&samples=" + samples + "&sensor=false";
-
-		String json = null;
-		if (endpoint.startsWith("http://")) {
-			// Send a GET request to the servlet
-			try	{
-
-				// Send data
-				String urlStr = endpoint;
-				if (requestParameters != null && requestParameters.length () > 0) {
-					urlStr += "?" + requestParameters;
-				}
-				
-
-				HttpClient client = new DefaultHttpClient(httpParameters);
-				
-				HttpGet request = new HttpGet(urlStr);				
-				HttpResponse httpresponse = client.execute(request);
-
-
-				BufferedReader reader = new BufferedReader(new InputStreamReader(
-						httpresponse.getEntity().getContent(), "UTF-8"));
-
-				String sResponse;
-				StringBuilder s = new StringBuilder();
-
-				while ((sResponse = reader.readLine()) != null) {
-					s = s.append(sResponse);
-				}
-				json = s.toString();
-				
-				
-			} catch (Exception e) {
-				Log.d("Error", "Error obteniendo datos del servidor elevation");
-				throw e;
-			}
-		}
-		
-
-		return json;
-	}
 	
-	
-	
-	public String getElevationPolyline(String polyline) throws Exception {	
+	public String getElevationPolyline(String host, String polyline) throws Exception {	
 		
 		HttpParams httpParameters = new BasicHttpParams();
 		// Set the timeout in milliseconds until a connection is established.
@@ -94,7 +34,7 @@ public class ElevationRequestGmaps {
 		HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 		
 		
-		String endpoint = "http://maps.googleapis.com/maps/api/elevation/json";
+		String endpoint = host + "/maps/api/elevation/json";
 		String requestParameters = "locations=enc:" + URLEncoder.encode(polyline) + 
 				"&sensor=false";
 		
@@ -133,8 +73,7 @@ public class ElevationRequestGmaps {
 				Log.d("Error", "Error obteniendo datos del servidor elevation");
 				throw e;
 			}
-		}
-		
+		}		
 
 		return json;
 	}

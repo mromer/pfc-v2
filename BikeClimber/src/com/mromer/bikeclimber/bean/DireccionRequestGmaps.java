@@ -19,7 +19,7 @@ import com.google.gson.Gson;
 
 public class DireccionRequestGmaps {	
 
-	public String obtenerRutas(String latitudDesde, String longitudDesde, 
+	public String obtenerRutas(String host, String latitudDesde, String longitudDesde, 
 			String latitudHasta, String longitudHasta, String medioTransporte) throws Exception {	
 		
 		HttpParams httpParameters = new BasicHttpParams();
@@ -33,7 +33,7 @@ public class DireccionRequestGmaps {
 		HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 		
 		
-		String endpoint = "http://maps.googleapis.com/maps/api/directions/json";
+		String endpoint = host + "/maps/api/directions/json";
 		String requestParameters =
 				"origin=" + latitudDesde + "," + longitudDesde + 
 				"&destination=" + latitudHasta + "," + longitudHasta + 
